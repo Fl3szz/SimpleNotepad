@@ -24,8 +24,6 @@ public class Notepad extends JFrame implements ActionListener {
         JMenuItem darkMode;
         JMenuItem lightMode;
 
-
-
         Notepad() {
 
             JOptionPane.showMessageDialog(null,"If you display time, your work will be replaced" +
@@ -94,12 +92,12 @@ public class Notepad extends JFrame implements ActionListener {
 
 
             textArea = new JTextArea();
-            textArea.setBackground(Color.DARK_GRAY);
+            textArea.setBackground(Color.white);
             JScrollPane scrollPane = new JScrollPane(textArea);
             this.add(scrollPane, BorderLayout.CENTER);
             this.setTitle("Notepad");
             this.setVisible(true);
-            this.setBackground(Color.DARK_GRAY);
+
         }
 
 
@@ -107,10 +105,9 @@ public class Notepad extends JFrame implements ActionListener {
     @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == loadItem) {
-                System.out.println("*beep boop* you loaded a file");
                 JFileChooser fileChooser = new JFileChooser();
-
                 int response = fileChooser.showOpenDialog(null); // select file to open
+                JOptionPane.showMessageDialog(null, "You loaded a file!");
                 if (response == JFileChooser.APPROVE_OPTION) {
                     // Loading a file
 
@@ -130,16 +127,17 @@ public class Notepad extends JFrame implements ActionListener {
 
             }
             if (e.getSource() == saveItem) {
-                JOptionPane.showMessageDialog(null, "*beep boop* You saved a file!");
 
                 JFileChooser fileChooser = new JFileChooser();
                 int response = fileChooser.showSaveDialog(null);
+                JOptionPane.showMessageDialog(null, "You saved a file!");
+
 
 
                 if (response == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
                     try {
-                        // Zapisuje wprowadzony tekst do pliku
+                        //Saves the entered text to a file
                         String content = textArea.getText();
                         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
                         writer.write(content);
@@ -159,7 +157,7 @@ public class Notepad extends JFrame implements ActionListener {
                 textArea.setText(formattedTime);
             }
             if (e.getSource() == aboutItem) {
-                JOptionPane.showMessageDialog(null, "Any bugs you fin will be fixed as soon" +
+                JOptionPane.showMessageDialog(null, "Any bugs you find will be fixed as soon" +
                                 " as possible, thank you for using this notepad :D");
             }
             if(e.getSource() == darkMode){
