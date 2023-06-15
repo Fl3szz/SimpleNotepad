@@ -161,11 +161,14 @@ public class Notepad extends JFrame implements ActionListener {
                                 " as possible, thank you for using this notepad :D");
             }
             if(e.getSource() == darkMode){
+                textArea.setCaretColor(Color.white);
                 textArea.setBackground(Color.DARK_GRAY);
                 textArea.setForeground(Color.white);
                 this.setBackground(Color.DARK_GRAY);
+
             }
             if(e.getSource() == lightMode){
+                textArea.setCaretColor(Color.black);
                 textArea.setBackground(Color.WHITE);
                 textArea.setForeground(Color.black);
                 this.setBackground(Color.white);
