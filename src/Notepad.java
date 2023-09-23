@@ -25,9 +25,6 @@ public class Notepad extends JFrame implements ActionListener {
         JMenuItem lightMode;
 
         Notepad() {
-
-            JOptionPane.showMessageDialog(null,"If you display time, your work will be replaced" +
-                    " by a time you displayed!!!",null,JOptionPane.WARNING_MESSAGE);
             this.setLayout(new BorderLayout());
             this.setSize(1000,750);
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -154,11 +151,11 @@ public class Notepad extends JFrame implements ActionListener {
                 LocalDateTime now = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
                 String formattedTime = now.format(formatter);
-                textArea.setText(formattedTime);
+                textArea.setText(textArea.getText()+" "+formattedTime);
             }
             if (e.getSource() == aboutItem) {
-                JOptionPane.showMessageDialog(null, "Any bugs you find will be fixed as soon" +
-                                " as possible, thank you for using this notepad :D");
+                JOptionPane.showMessageDialog(null, "Any errors you find will be fixed as soon" +
+                                " as possible, thank you for using this notepad");
             }
             if(e.getSource() == darkMode){
                 textArea.setCaretColor(Color.white);
