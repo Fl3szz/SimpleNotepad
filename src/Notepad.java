@@ -151,7 +151,7 @@ public class Notepad extends JFrame implements ActionListener {
                 LocalDateTime now = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
                 String formattedTime = now.format(formatter);
-                textArea.setText(textArea.getText()+" "+formattedTime);
+                textArea.setText(textArea.getText()+"  "+formattedTime);
             }
             if (e.getSource() == aboutItem) {
                 JOptionPane.showMessageDialog(null, "Any errors you find will be fixed as soon" +
