@@ -15,6 +15,7 @@ public class Notepad extends JFrame implements ActionListener {
         JMenuItem loadItem;
         JMenuItem saveItem;
         JMenuItem exitItem;
+        JCheckBoxMenuItem lineWrap;
         JTextArea textArea;
         ImageIcon icon;
         JMenuItem dateItem;
@@ -43,6 +44,7 @@ public class Notepad extends JFrame implements ActionListener {
             dateItem = new JMenuItem("Display Time");
             darkMode = new JMenuItem("Dark mode");
             lightMode = new JMenuItem("Light mode");
+            lineWrap = new JCheckBoxMenuItem ("Line Wrap",true);
 
             loadItem.addActionListener(this);
             saveItem.addActionListener(this);
@@ -50,6 +52,7 @@ public class Notepad extends JFrame implements ActionListener {
             dateItem.addActionListener(this);
             darkMode.addActionListener(this);
             lightMode.addActionListener(this);
+            lineWrap.addActionListener(this);
 
             loadItem.setMnemonic('l'); //L for load
             saveItem.setMnemonic('s');//S for save
@@ -57,12 +60,15 @@ public class Notepad extends JFrame implements ActionListener {
             dateItem.setMnemonic('d');//D for datetime
             darkMode.setMnemonic('n');//n dark mode
             lightMode.setMnemonic('f');//f for light mode
+            lineWrap.setMnemonic('w');//w to enable line wrapping
 
             fileMenu.add(loadItem);
             fileMenu.add(saveItem);
             fileMenu.add(exitItem);
 
             editMenu.add(dateItem);
+
+            displayMenu.add(lineWrap);
 
             selectMode.add(darkMode);
             selectMode.add(lightMode);
@@ -91,7 +97,6 @@ public class Notepad extends JFrame implements ActionListener {
                 int response = fileChooser.showOpenDialog(null); // select file to open
                 if (response == JFileChooser.APPROVE_OPTION) {
                     // Loading a file
-
                     File file = fileChooser.getSelectedFile();
                     System.out.println(file);
                     try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -132,6 +137,11 @@ public class Notepad extends JFrame implements ActionListener {
                 String formattedTime = now.format(formatter);
                 textArea.setText(textArea.getText()+"  "+formattedTime);
             }
+            if (e.getSource()==lineWrap){
+                boolean wrapEnabled = lineWrap.isSelected();
+                textArea.setLineWrap(wrapEnabled);
+                textArea.setWrapStyleWord(wrapEnabled);
+            }
             if(e.getSource() == darkMode){
                 textArea.setCaretColor(Color.white);
                 textArea.setBackground(Color.DARK_GRAY);
@@ -144,7 +154,6 @@ public class Notepad extends JFrame implements ActionListener {
                 textArea.setBackground(Color.WHITE);
                 textArea.setForeground(Color.black);
                 this.setBackground(Color.white);
-
             }
         }
 }
