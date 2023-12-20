@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,67 +10,57 @@ public class Notepad extends JFrame implements ActionListener {
         JMenuBar menuBar;
         JMenu fileMenu;
         JMenu editMenu;
-        JMenu helpMenu;
+        JMenu displayMenu;
         JMenu selectMode;
         JMenuItem loadItem;
         JMenuItem saveItem;
         JMenuItem exitItem;
         JTextArea textArea;
-        JMenuItem aboutItem;
         ImageIcon icon;
         JMenuItem dateItem;
 
         JMenuItem darkMode;
         JMenuItem lightMode;
 
-        Notepad() {
+    Notepad() {
             this.setLayout(new BorderLayout());
             this.setSize(1000,750);
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             this.setLocationRelativeTo(null);
-
 
             menuBar = new JMenuBar();
             icon = new ImageIcon("C:\\Users\\Admin\\Desktop\\note.jpg");
             Image image = icon.getImage();
             fileMenu = new JMenu("File");
             editMenu = new JMenu("Edit");
-            helpMenu = new JMenu("Help");
+            displayMenu = new JMenu("Display");
             selectMode = new JMenu("Select Mode");
 
             // Menu items
             loadItem = new JMenuItem("Load");
             saveItem = new JMenuItem("Save");
             exitItem = new JMenuItem("Exit");
-            aboutItem = new JMenuItem("About");
             dateItem = new JMenuItem("Display Time");
             darkMode = new JMenuItem("Dark mode");
             lightMode = new JMenuItem("Light mode");
 
-
             loadItem.addActionListener(this);
             saveItem.addActionListener(this);
             exitItem.addActionListener(this);
-            aboutItem.addActionListener(this);
             dateItem.addActionListener(this);
             darkMode.addActionListener(this);
             lightMode.addActionListener(this);
 
-            loadItem.setMnemonic(KeyEvent.VK_L); //L for load
-            saveItem.setMnemonic(KeyEvent.VK_S);//S for save
-            exitItem.setMnemonic(KeyEvent.VK_E);//E for exit
-            aboutItem.setMnemonic(KeyEvent.VK_A);//A for About
-            dateItem.setMnemonic(KeyEvent.VK_D);//D for datetime
-            darkMode.setMnemonic(KeyEvent.VK_N);//n dark mode
-            lightMode.setMnemonic(KeyEvent.VK_F);//f for light mode
-
-
+            loadItem.setMnemonic('l'); //L for load
+            saveItem.setMnemonic('s');//S for save
+            exitItem.setMnemonic('e');//E for exit
+            dateItem.setMnemonic('d');//D for datetime
+            darkMode.setMnemonic('n');//n dark mode
+            lightMode.setMnemonic('f');//f for light mode
 
             fileMenu.add(loadItem);
             fileMenu.add(saveItem);
             fileMenu.add(exitItem);
-
-            helpMenu.add(aboutItem);
 
             editMenu.add(dateItem);
 
@@ -80,13 +69,12 @@ public class Notepad extends JFrame implements ActionListener {
 
             menuBar.add(fileMenu);
             menuBar.add(editMenu);
-            menuBar.add(helpMenu);
+            menuBar.add(displayMenu);
             menuBar.setBackground(Color.lightGray);
             menuBar.add(selectMode);
 
             this.setIconImage(image);
             this.setJMenuBar(menuBar);
-
 
             textArea = new JTextArea();
             textArea.setBackground(Color.white);
@@ -96,15 +84,11 @@ public class Notepad extends JFrame implements ActionListener {
             this.setVisible(true);
 
         }
-
-
-
     @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == loadItem) {
                 JFileChooser fileChooser = new JFileChooser();
                 int response = fileChooser.showOpenDialog(null); // select file to open
-                JOptionPane.showMessageDialog(null, "You loaded a file!");
                 if (response == JFileChooser.APPROVE_OPTION) {
                     // Loading a file
 
@@ -121,16 +105,11 @@ public class Notepad extends JFrame implements ActionListener {
                         ex.printStackTrace();
                     }
                 }
-
             }
             if (e.getSource() == saveItem) {
 
                 JFileChooser fileChooser = new JFileChooser();
                 int response = fileChooser.showSaveDialog(null);
-                JOptionPane.showMessageDialog(null, "You saved a file!");
-
-
-
                 if (response == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
                     try {
@@ -153,10 +132,6 @@ public class Notepad extends JFrame implements ActionListener {
                 String formattedTime = now.format(formatter);
                 textArea.setText(textArea.getText()+"  "+formattedTime);
             }
-            if (e.getSource() == aboutItem) {
-                JOptionPane.showMessageDialog(null, "Any errors you find will be fixed as soon" +
-                                " as possible, thank you for using this notepad");
-            }
             if(e.getSource() == darkMode){
                 textArea.setCaretColor(Color.white);
                 textArea.setBackground(Color.DARK_GRAY);
@@ -169,13 +144,7 @@ public class Notepad extends JFrame implements ActionListener {
                 textArea.setBackground(Color.WHITE);
                 textArea.setForeground(Color.black);
                 this.setBackground(Color.white);
+
             }
-
-
         }
 }
-
-
-
-
-
