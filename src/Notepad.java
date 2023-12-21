@@ -28,6 +28,8 @@ public class Notepad extends JFrame implements ActionListener {
         JMenuItem darkMode;
         JMenuItem lightMode;
         JMenuItem undoItem;
+        JMenuItem zoomIn;
+        JMenuItem zoomOut;
         JLabel statusLabel;
         UndoManager undoManager;
 
@@ -55,7 +57,10 @@ public class Notepad extends JFrame implements ActionListener {
             lightMode = new JMenuItem("Light mode");
             lineWrap = new JCheckBoxMenuItem ("Line Wrap",true);
             undoItem = new JMenuItem("Undo");
-            statusLabel = new JLabel("Lines: 1, Columns: 1");//Status label
+            statusLabel = new JLabel("Lines: 1, Columns: 1");//Status bar
+            zoomIn = new JMenuItem("Zoom In");
+            zoomOut= new JMenuItem("Zoom out");
+
 
             //adding ActionListener to items
             loadItem.addActionListener(this);
@@ -66,6 +71,8 @@ public class Notepad extends JFrame implements ActionListener {
             lightMode.addActionListener(this);
             lineWrap.addActionListener(this);
             undoItem.addActionListener(this);
+            zoomIn.addActionListener(this);
+            zoomOut.addActionListener(this);
 
             //Keyboard shortcuts
             loadItem.setMnemonic('l'); //L for load
@@ -76,6 +83,10 @@ public class Notepad extends JFrame implements ActionListener {
             lightMode.setMnemonic('f');//f for light mode
             lineWrap.setMnemonic('w');//w to enable line wrapping
             undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK));//ctrl+z for undo
+            zoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.SHIFT_DOWN_MASK));/*
+            shift + "+" to zoom in*/
+            zoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.SHIFT_DOWN_MASK));/* shift + "-"
+            to zoom out*/
 
             //adding items to menus
             fileMenu.add(loadItem);
@@ -84,6 +95,8 @@ public class Notepad extends JFrame implements ActionListener {
 
             editMenu.add(dateItem);
             editMenu.add(undoItem);
+            editMenu.add(zoomIn);
+            editMenu.add(zoomOut);
 
             displayMenu.add(lineWrap);
 
@@ -213,11 +226,24 @@ public class Notepad extends JFrame implements ActionListener {
                 undoManager.undo();
             }
         }
+        if(e.getSource()==zoomIn){
+        changeFontSize(2.0);
+        }
+        if (e.getSource()==zoomOut){
+            changeFontSize(0.5);
+        }
         }
         //method that updates the bar whenever you write something
         private void updateStatusBar() throws BadLocationException {
         int lines = textArea.getLineCount();
         int columns = textArea.getCaretPosition() - textArea.getLineStartOffset(textArea.getLineCount()-1);
         statusLabel.setText("Lines"+lines+" ,Columns:"+columns);
+        }
+        private void changeFontSize(double scaleFactor){
+        Font currentFont = textArea.getFont();
+        float newSize = currentFont.getSize() * (float) scaleFactor;
+        Font newFont = currentFont.deriveFont(newSize);
+        textArea.setFont(newFont);
+
         }
 }
