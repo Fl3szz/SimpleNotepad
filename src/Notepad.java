@@ -2,9 +2,12 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,12 +23,13 @@ public class Notepad extends JFrame implements ActionListener {
         JMenuItem exitItem;
         JCheckBoxMenuItem lineWrap;
         JTextArea textArea;
-        ImageIcon icon;
         JMenuItem dateItem;
 
         JMenuItem darkMode;
         JMenuItem lightMode;
+        JMenuItem undoItem;
         JLabel statusLabel;
+        UndoManager undoManager;
 
     Notepad() {
              //setting up the frame
@@ -33,14 +37,14 @@ public class Notepad extends JFrame implements ActionListener {
             this.setSize(1000,750);
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             this.setLocationRelativeTo(null);
+
             //creating menus and menu bar
             menuBar = new JMenuBar();
-            icon = new ImageIcon("C:\\Users\\Admin\\Desktop\\note.jpg");
-            Image image = icon.getImage();
             fileMenu = new JMenu("File");
             editMenu = new JMenu("Edit");
             displayMenu = new JMenu("Display");
             selectMode = new JMenu("Select Mode");
+            undoManager = new UndoManager();
 
             // Menu items
             loadItem = new JMenuItem("Load");
@@ -50,7 +54,9 @@ public class Notepad extends JFrame implements ActionListener {
             darkMode = new JMenuItem("Dark mode");
             lightMode = new JMenuItem("Light mode");
             lineWrap = new JCheckBoxMenuItem ("Line Wrap",true);
+            undoItem = new JMenuItem("Undo");
             statusLabel = new JLabel("Lines: 1, Columns: 1");//Status label
+
             //adding ActionListener to items
             loadItem.addActionListener(this);
             saveItem.addActionListener(this);
@@ -59,6 +65,8 @@ public class Notepad extends JFrame implements ActionListener {
             darkMode.addActionListener(this);
             lightMode.addActionListener(this);
             lineWrap.addActionListener(this);
+            undoItem.addActionListener(this);
+
             //Keyboard shortcuts
             loadItem.setMnemonic('l'); //L for load
             saveItem.setMnemonic('s');//S for save
@@ -67,12 +75,15 @@ public class Notepad extends JFrame implements ActionListener {
             darkMode.setMnemonic('n');//n dark mode
             lightMode.setMnemonic('f');//f for light mode
             lineWrap.setMnemonic('w');//w to enable line wrapping
+            undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK));//ctrl+z for undo
+
             //adding items to menus
             fileMenu.add(loadItem);
             fileMenu.add(saveItem);
             fileMenu.add(exitItem);
 
             editMenu.add(dateItem);
+            editMenu.add(undoItem);
 
             displayMenu.add(lineWrap);
 
@@ -85,7 +96,6 @@ public class Notepad extends JFrame implements ActionListener {
             menuBar.setBackground(Color.lightGray);
             menuBar.add(selectMode);
 
-            this.setIconImage(image);
             this.setJMenuBar(menuBar);
             this.add(statusLabel, BorderLayout.SOUTH);
             textArea = new JTextArea();
@@ -94,6 +104,18 @@ public class Notepad extends JFrame implements ActionListener {
             this.add(scrollPane, BorderLayout.CENTER);
             this.setTitle("Notepad");
             this.setVisible(true);
+
+        Action undoAction = new AbstractAction("Undo") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (undoManager.canUndo()) {
+                    undoManager.undo();
+                }
+            }
+        };
+        textArea.getActionMap().put("Undo", undoAction);
+        textArea.getDocument().addUndoableEditListener(e -> undoManager.addEdit(e.getEdit()));
+
             //added Document listener for tracking changes in text area
             textArea.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
@@ -104,7 +126,6 @@ public class Notepad extends JFrame implements ActionListener {
                         throw new RuntimeException(ex);
                     }
                 }
-
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     try {
@@ -113,7 +134,6 @@ public class Notepad extends JFrame implements ActionListener {
                         throw new RuntimeException(ex);
                     }
                 }
-
                 @Override
                 public void changedUpdate(DocumentEvent e) {
                     try {
@@ -123,7 +143,7 @@ public class Notepad extends JFrame implements ActionListener {
                     }
                 }
             });
-        }
+    }
     @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == loadItem) {
@@ -181,7 +201,6 @@ public class Notepad extends JFrame implements ActionListener {
                 textArea.setBackground(Color.DARK_GRAY);
                 textArea.setForeground(Color.white);
                 this.setBackground(Color.DARK_GRAY);
-
             }
             if(e.getSource() == lightMode){
                 textArea.setCaretColor(Color.black);
@@ -189,6 +208,11 @@ public class Notepad extends JFrame implements ActionListener {
                 textArea.setForeground(Color.black);
                 this.setBackground(Color.white);
             }
+        if (e.getSource() == undoItem) {
+            if (undoManager.canUndo()) {
+                undoManager.undo();
+            }
+        }
         }
         //method that updates the bar whenever you write something
         private void updateStatusBar() throws BadLocationException {
