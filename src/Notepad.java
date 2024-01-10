@@ -33,6 +33,7 @@ public class Notepad extends JFrame implements ActionListener {
     JLabel statusLabel;
     UndoManager undoManager;
     JMenuItem newWindow;
+    JCheckBoxMenuItem barStatus;
     Notepad() {
         //setting up the frame
         this.setLayout(new BorderLayout());
@@ -62,6 +63,7 @@ public class Notepad extends JFrame implements ActionListener {
         zoomIn = new JMenuItem("Zoom In");
         zoomOut = new JMenuItem("Zoom out");
         newWindow = new JMenuItem("New Window");
+        barStatus = new JCheckBoxMenuItem("Status Bar");
 
 
         //adding ActionListener to items
@@ -76,6 +78,7 @@ public class Notepad extends JFrame implements ActionListener {
         zoomIn.addActionListener(this);
         zoomOut.addActionListener(this);
         newWindow.addActionListener(this);
+        barStatus.addActionListener(this);
 
 
         //Keyboard shortcuts
@@ -93,6 +96,8 @@ public class Notepad extends JFrame implements ActionListener {
             to zoom out*/
         newWindow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK));/* ctrl +t for
             new window*/
+        barStatus.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));/*ctrl+o for
+        bar status*/
         //adding items to menus
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
@@ -105,6 +110,7 @@ public class Notepad extends JFrame implements ActionListener {
         displayMenu.add(lineWrap);
         displayMenu.add(zoomOut);
         displayMenu.add(zoomIn);
+        displayMenu.add(barStatus);
 
         selectMode.add(darkMode);
         selectMode.add(lightMode);
@@ -122,9 +128,10 @@ public class Notepad extends JFrame implements ActionListener {
         JScrollPane scrollPane = new JScrollPane(textArea);
         this.add(scrollPane, BorderLayout.CENTER);
         this.setTitle("Notepad");
+        statusLabel.setVisible(false);
         this.setVisible(true);
 
-
+        //undo action
         Action undoAction = new AbstractAction("Undo") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,7 +143,7 @@ public class Notepad extends JFrame implements ActionListener {
         textArea.getActionMap().put("Undo", undoAction);
         textArea.getDocument().addUndoableEditListener(e -> undoManager.addEdit(e.getEdit()));
 
-        //added Document listener for tracking changes in text area
+        //added Document listener for tracking changes in text area(status bar)
         textArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -166,6 +173,7 @@ public class Notepad extends JFrame implements ActionListener {
             }
         });
     }
+    //opening files
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == openItem) {
@@ -187,6 +195,7 @@ public class Notepad extends JFrame implements ActionListener {
                 }
             }
         }
+        //saving files
         if (e.getSource() == saveItem) {
 
             JFileChooser fileChooser = new JFileChooser();
@@ -204,20 +213,24 @@ public class Notepad extends JFrame implements ActionListener {
                 }
             }
         }
+        //exit
         if (e.getSource() == exitItem) {
             System.exit(0);
         }
+        //display date
         if (e.getSource() == dateItem) {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
             String formattedTime = now.format(formatter);
             textArea.setText(textArea.getText() + "  " + formattedTime);
         }
+        //line wrapping
         if (e.getSource() == lineWrap) {
             boolean wrapEnabled = lineWrap.isSelected();
             textArea.setLineWrap(wrapEnabled);
             textArea.setWrapStyleWord(wrapEnabled);
         }
+        //dark/light mode
         if (e.getSource() == darkMode) {
             textArea.setCaretColor(Color.white);
             textArea.setBackground(Color.DARK_GRAY);
@@ -235,14 +248,19 @@ public class Notepad extends JFrame implements ActionListener {
                 undoManager.undo();
             }
         }
+        //zoom in/out
         if (e.getSource() == zoomIn) {
             changeFontSize(2.0);
         }
         if (e.getSource() == zoomOut) {
             changeFontSize(0.5);
         }
+        //new window
         if (e.getSource() == newWindow) {
           new Notepad();
+        }
+        if(e.getSource()==barStatus){
+            statusLabel.setVisible(barStatus.isSelected());
         }
     }
     //method that updates the bar whenever you write something
