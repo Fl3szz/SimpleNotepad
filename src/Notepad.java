@@ -34,6 +34,7 @@ public class Notepad extends JFrame implements ActionListener {
     UndoManager undoManager;
     JMenuItem newWindow;
     JCheckBoxMenuItem barStatus;
+    JMenuItem closeWindow;
     Notepad() {
         //setting up the frame
         this.setLayout(new BorderLayout());
@@ -64,6 +65,7 @@ public class Notepad extends JFrame implements ActionListener {
         zoomOut = new JMenuItem("Zoom out");
         newWindow = new JMenuItem("New Window");
         barStatus = new JCheckBoxMenuItem("Status Bar");
+        closeWindow = new JMenuItem("Close Window");
 
 
         //adding ActionListener to items
@@ -79,6 +81,8 @@ public class Notepad extends JFrame implements ActionListener {
         zoomOut.addActionListener(this);
         newWindow.addActionListener(this);
         barStatus.addActionListener(this);
+        closeWindow.addActionListener(this);
+
 
 
         //Keyboard shortcuts
@@ -98,11 +102,13 @@ public class Notepad extends JFrame implements ActionListener {
             new window*/
         barStatus.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));/*ctrl+o for
         bar status*/
+        closeWindow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
         //adding items to menus
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
         fileMenu.add(exitItem);
         fileMenu.add(newWindow);
+        fileMenu.add(closeWindow);
 
         editMenu.add(dateItem);
         editMenu.add(undoItem);
@@ -261,6 +267,9 @@ public class Notepad extends JFrame implements ActionListener {
         }
         if(e.getSource()==barStatus){
             statusLabel.setVisible(barStatus.isSelected());
+        }
+        if(e.getSource()==closeWindow){
+            dispose();
         }
     }
     //method that updates the bar whenever you write something
